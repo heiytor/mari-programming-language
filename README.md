@@ -46,13 +46,11 @@ make test && ./run_tests
 
 If all tests pass, the output will be something like:
 
-![Test results - All Pass](https://example.com/test_results_all_pass.png)
+![image](https://github.com/heiytor/mari-programming-language/assets/107213601/62583e37-9fde-4c85-988b-bd43f3290aa8)
 
 On the other hand, if any test fails, the program will exit, and the output will be something like:
 
-![Test results - Failures](https://example.com/test_results_failures.png)
-
-<h1 align="center">Development</h1>
+![image](https://github.com/heiytor/mari-programming-language/assets/107213601/b742dfb6-84ba-4cfd-a1cf-44d012ad43b4)
 
 ## Lexer:
 
