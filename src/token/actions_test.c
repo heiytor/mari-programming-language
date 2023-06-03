@@ -9,7 +9,7 @@
 #include <token/codes.h>
 
 
-int are_tokens_equal(struct Token *t1, struct Token *t2) {
+int are_tok_equal(struct Token *t1, struct Token *t2) {
     if (strcmp(t1->literal, t2->literal) != 0) {
         return 0;
     }
@@ -26,7 +26,7 @@ int are_tokens_equal(struct Token *t1, struct Token *t2) {
     return 1;
 }
 
-void run_test(char* input, struct Token expected_tok[], int num_expected_tok, char *test_name) {
+void comp_tok(char* input, struct Token expected_tok[], int num_expected_tok, char *test_name) {
     struct Lexer *lex = new_lexer(input);
     struct Tokens *toks = init_token_arr();
 
@@ -38,32 +38,35 @@ void run_test(char* input, struct Token expected_tok[], int num_expected_tok, ch
         ++num_tok;
     }
 
+    // printf("\n");
     // for (int i = 0; i < num_tok; i++) {
+    //     printf("i[%d] ", i);
     //     print_token(toks->tokens[i]);
     // }
 
     free(lex);
 
     if (num_tok != num_expected_tok) {
-        printf("%s: number of tokens mismatch. Expected %d, got %d.\n", test_name, num_expected_tok, num_tok);
+        printf("\x1b[35m%s:\x1b[0m \x1b[31mNumber of tokens mismatch want=%d got=%d.\x1b[0m\n", test_name, num_expected_tok, num_tok);
         pop_tokens(toks);
         exit(1);
     }
 
     for (int i = 0; i < num_tok; i++) {
-        if (!are_tokens_equal(toks->tokens[i], &expected_tok[i])) {
-            printf("\n\x1b[35m%s:\x1b[0m \x1b[31mInvalid token[%d]. Expected code=%d, got code=%d.\x1b[0m\n", test_name, i, expected_tok[i].code, toks->tokens[i]->code);
+        if (!are_tok_equal(toks->tokens[i], &expected_tok[i])) {
+            printf("\x1b[35m%s:\x1b[0m \x1b[31mInvalid token[%d] want=%d got=%d.\x1b[0m\n", test_name, i, expected_tok[i].code, toks->tokens[i]->code);
             pop_tokens(toks);
             exit(1);
         }
     }
 
-    printf("\n\x1b[36m%s:\x1b[0m \x1b[32mPass.\x1b[0m\n", test_name);
+    printf("\x1b[36m%s:\x1b[0m \x1b[32mPass.\x1b[0m\n", test_name);
 
     pop_tokens(toks);
 }
 
 
+// Tests all single symbols at once
 void test_single_symbol_tokenization() {
     char *input = "+ - * ! = < > / ? : , .;";
 
@@ -86,42 +89,60 @@ void test_single_symbol_tokenization() {
         { ";", 30, 1, 24 },
     };
 
-    run_test(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_single_symbol_tokenization");
+    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_single_symbol_tokenization");
 }
 
-void test_variable_assignment_tokenization() {
+// Tests all ways to assign functions and variables
+void test_variable_and_function_assignment_tokenization() {
     char* input = "def number = 402942;\n"
-                  "def add = fn(x, y) { x + y; }";
+                  "def add = func(x, y) { x + y; }\n"
+                  "def func square(x) {\n"
+                  "\treturn x ** 2;\n"
+                  "}";
 
     struct Lexer *lex = new_lexer(input);
     struct Tokens *toks = init_token_arr();
 
     struct Token expected_tok[] = {
-        { "def", 36, 1, 1 },
-        { "number", 3, 1, 5 },
-        { "=", 5, 1, 12 },
-        { "402942", 4, 1, 14 },
-        { ";", 30, 1, 20 },
-        { "def", 36, 2, 2 },
-        { "add", 3, 2, 6 },
-        { "=", 5, 2, 10 },
-        { "fn", 35, 2, 12 },
-        { "(", 31, 2, 14 },
-        { "x", 3, 2, 15 },
-        { ",", 29, 2, 16 },
-        { "y", 3, 2, 18 },
-        { ")", 32, 2, 19 },
-        { "{", 33, 2, 21 },
-        { "x", 3, 2, 23 },
-        { "+", 6, 2, 25 },
-        { "y", 3, 2, 27 },
-        { ";", 30, 2, 28 },
-        { "}", 34, 2, 30 },
+        { "def",     code: 36,  line: 1,  column: 1  },
+        { "number",  code: 3,   line: 1,  column: 5  },
+        { "=",       code: 5,   line: 1,  column: 12 },
+        { "402942",  code: 4,   line: 1,  column: 14 },
+        { ";",       code: 30,  line: 1,  column: 20 },
+        { "def",     code: 36,  line: 2,  column: 2  },
+        { "add",     code: 3,   line: 2,  column: 6  },
+        { "=",       code: 5,   line: 2,  column: 10 },
+        { "func",    code: 35,  line: 2,  column: 12 },
+        { "(",       code: 31,  line: 2,  column: 16 },
+        { "x",       code: 3,   line: 2,  column: 17 },
+        { ",",       code: 29,  line: 2,  column: 18 },
+        { "y",       code: 3,   line: 2,  column: 20 },
+        { ")",       code: 32,  line: 2,  column: 21 },
+        { "{",       code: 33,  line: 2,  column: 23 },
+        { "x",       code: 3,   line: 2,  column: 25 },
+        { "+",       code: 6,   line: 2,  column: 27 },
+        { "y",       code: 3,   line: 2,  column: 29 },
+        { ";",       code: 30,  line: 2,  column: 30 },
+        { "}",       code: 34,  line: 2,  column: 32 },
+        { "def",     code: 36,  line: 3,  column: 2  },
+        { "func",    code: 35,  line: 3,  column: 6  },
+        { "square",  code: 3,   line: 3,  column: 11 },
+        { "(",       code: 31,  line: 3,  column: 17 },
+        { "x",       code: 3,   line: 3,  column: 18 },
+        { ")",       code: 32,  line: 3,  column: 19 },
+        { "{",       code: 33,  line: 3,  column: 21 },
+        { "return",  code: 40,  line: 4,  column: 3  },
+        { "x",       code: 3,   line: 4,  column: 10 },
+        { "**",      code: 22,  line: 4,  column: 12 },
+        { "2",       code: 4,   line: 4,  column: 15 },
+        { ";",       code: 30,  line: 4,  column: 16 },
+        { "}",       code: 34,  line: 5,  column: 2  },
     };
 
-    run_test(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_variable_assignment_tokenization");
+    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_variable_and_function_assignment_tokenization");
 }
 
+// Tests all delimiters at once
 void test_delimiters_tokenization() {
     char *input = "() {};";
 
@@ -136,9 +157,10 @@ void test_delimiters_tokenization() {
         { ";", 30, 1, 6 },
     };
 
-    run_test(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_delimiters_tokenization");
+    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_delimiters_tokenization");
 }
 
+// Tests all compound symbols at once
 void test_compound_symbol_tokenization() {
     char *input = "++ -- ** !! ==;\n"
                   "+= -= *= /= <= >= !=;";
@@ -166,9 +188,45 @@ void test_compound_symbol_tokenization() {
 
     int num_tok = 0;
 
-    run_test(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_compound_symbol_tokenization");
+    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_compound_symbol_tokenization");
 }
 
+// Tests all compound symbols at once
+// TODO:
+//     ADD NEGATIVE SUPPORT
+void test_numbers_tokenization() {
+    char *input = "0xFF;\n" // hex
+                  "0b00;\n" // binary
+                  "0o01;\n" // octal
+                  "3.14;\n" // float
+                  "3000;\n" // int
+                  "3_00;";  // int with _
+
+    struct Lexer *lex = new_lexer(input);
+    struct Tokens *toks = init_token_arr();
+
+    struct Token expected_tok[] = {
+        { "0xFF",  code: 4,   line: 1,  column: 1 },
+        { ";",     code: 30,  line: 1,  column: 5 },
+        { "0b00",  code: 4,   line: 2,  column: 2 },
+        { ";",     code: 30,  line: 2,  column: 6 },
+        { "0o01",  code: 4,   line: 3,  column: 2 },
+        { ";",     code: 30,  line: 3,  column: 6 },
+        { "3.14",  code: 4,   line: 4,  column: 2 },
+        { ";",     code: 30,  line: 4,  column: 6 },
+        { "3000",  code: 4,   line: 5,  column: 2 },
+        { ";",     code: 30,  line: 5,  column: 6 },
+        { "3_00",  code: 4,   line: 6,  column: 2 },
+        { ";",     code: 30,  line: 6,  column: 6 },
+    };
+
+    int num_tok = 0;
+
+    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_numbers_tokenization");
+}
+
+
+// Should pass if ";" don't concatenate with other characters
 void test_semicolon_symbol_independence() {
     char* input = ";* ;+ ;- ;= ;> ;<\n"
                   "*; +; -; =; <; >;";
@@ -178,7 +236,7 @@ void test_semicolon_symbol_independence() {
 
     struct Token expected_tok[] = {
         { ";", 30, 1, 1 },
-        { "*", 9, 1, 2 },
+        { "*", 10, 1, 2 },
         { ";", 30, 1, 4 },
         { "+", 6, 1, 5 },
         { ";", 30, 1, 7 },
@@ -203,5 +261,5 @@ void test_semicolon_symbol_independence() {
         { ";", 30, 2, 18 },
     };
 
-    run_test(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_semicolon_symbol_independence");
+    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_semicolon_symbol_independence");
 }

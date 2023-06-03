@@ -6,12 +6,8 @@
 #include <helpers/characters.h>
 #include <types.h>
 
-/**
- * TODO:
- *      Add more numbers support.
- */
 bool is_numeric(byte ch) {
-    return '0' <= ch && ch <= '9';
+    return '0' <= ch && ch <= '9' || ch == '.';
 }
 
 

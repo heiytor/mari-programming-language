@@ -11,14 +11,15 @@
 
 #include <lexer/actions.h>
 
-int are_tokens_equal(struct Token *t1, struct Token *t2);
+int are_tok_equal(struct Token *t1, struct Token *t2);
 
-void run_test(char* input, struct Token expected_tok[], int num_expected_tok, char *test_name);
+void comp_tok(char* input, struct Token expected_tok[], int num_expected_tok, char *test_name);
 
 void test_single_symbol_tokenization();
-void test_variable_assignment_tokenization();
+void test_variable_and_function_assignment_tokenization();
 void test_delimiters_tokenization();
 void test_compound_symbol_tokenization();
 void test_semicolon_symbol_independence();
+void test_numbers_tokenization();
 
 #endif /* TOKEN_ACTIONS_TEST_H */
