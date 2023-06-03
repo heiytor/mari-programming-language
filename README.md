@@ -36,7 +36,7 @@ Once again, you can read these statements as "define function add_numbers ..." a
 
 <h1 align="center">Testing</h1>
 
-As I couldn't find a suitable testing package, I built my own testing framework. You can find all unit tests in files with names ending in `_test.c` and `_test.h`.
+As I couldn't find a suitable testing package, I built my own testing ""framework"". You can find all unit tests in files with names ending in `_test.c` and `_test.h`.
 
 To run all tests, use the following command:
 
@@ -60,3 +60,5 @@ On the other hand, if any test fails, the program will exit, and the output will
 > [wikipedia](https://en.wikipedia.org/wiki/Lexical_analysis)
 
 under construction
+
+Currently lexer support hexdecimal, binary, octal, integer and float numbers. I'm working on negative number support.
