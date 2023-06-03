@@ -1,0 +1,24 @@
+{
+    "files.associations": {
+        "uchar.h": "c",
+        "string": "c",
+        "token.h": "c",
+        "stdio.h": "c",
+        "string.h": "c",
+        "cstddef": "c",
+        "interpreter_codes.h": "c",
+        "stdlib.h": "c",
+        "lexer.h": "c",
+        "types.h": "c",
+        "helpers.h": "c",
+        "system_error": "c",
+        "codes.h": "c",
+        "keywords_symbols.h": "c",
+        "stdbool.h": "c",
+        "functional": "c",
+        "methods.h": "c",
+        "structs.h": "c",
+        "mappers.h": "c",
+        "actions.h": "c"
+    }
+}

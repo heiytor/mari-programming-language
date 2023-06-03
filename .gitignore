@@ -1,0 +1,5 @@
+obj
+*.o
+
+program
+run_tests
