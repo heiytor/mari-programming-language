@@ -5,7 +5,7 @@
 #define END_OF_FILE 2
 
 #define IDENT 3
-#define INT 4
+#define NUMBER 4
 
 // Operators
 #define ASSIGN 5

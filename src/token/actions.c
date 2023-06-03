@@ -57,7 +57,7 @@ struct Token *new_token(char *literal, byte code, int line, int column) {
 struct Token *next_token(struct Lexer *lex) {
     jump_whitespace(lex);
 
-    if (is_letter(lex->ch)) {
+    if (is_letter(lex->ch) && lex->ch != '.') {
         char *curr_literal = read_sequence(lex);
         uint8 code = map_ident(curr_literal);
         int column = lex->column - strlen(curr_literal);
@@ -65,11 +65,11 @@ struct Token *next_token(struct Lexer *lex) {
         return new_token(curr_literal, code, lex->line, column);
     }
 
-    if (is_numeric(lex->ch)) {
+    if (is_numeric(lex->ch) && lex->ch != '.') {
         char *curr_literal = read_sequence(lex);
         int column = lex->column - strlen(curr_literal);
 
-        return new_token(curr_literal, INT, lex->line, column);
+        return new_token(curr_literal, NUMBER, lex->line, column);
     }
 
     char curr_literal[3] = {lex->ch, '\0', '\0'};
