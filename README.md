@@ -1,62 +1,93 @@
 <h1 align="center">Overview</h1>
 
-**Mari** is a simple interpreted language created for study purposes. It is built using standard C, with plans to incorporate assembly optimization in the future.
+**Mariana** is a simple interpreted language created using standard C. It came about from my desire to design something with "perfect" syntax (in my opinion). It's developed purely for learning purposes.
 
-While I acknowledge that this language will never be used for production purposes, I would like to utilize this space to discuss the development process and architectural choices made during its creation.
+Being aware that this language will never be used in production, and is merely a small personal project, this README will be used as a discussion platform during the development process, such as, for instance, architectural decisions concerning syntax.
+
+<h1 align="center">Getting Started</h1>
+
+I plan to develop an installation script. For now, you can clone the source code and compile it directly:
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/heiytor/mari-programming-language && cd mari-programming-language
+    ```
+
+2. Compile the source code:
+
+    ```bash
+    make dev
+    ```
+
+    During the project development, I personally chose to build my own testing "framework" to stick to the idea of using only standard C. You can run all the tests with:
+    ```bash
+    make test
+    ```
+    
+    If all tests pass, the output will look something like:
+
+    ![image](https://github.com/heiytor/mari-programming-language/assets/107213601/62583e37-9fde-4c85-988b-bd43f3290aa8)
+
+    
+    On the other hand, if any test fails, the program will exit, and the output will look something like:
+
+    ![image](https://github.com/heiytor/mari-programming-language/assets/107213601/b742dfb6-84ba-4cfd-a1cf-44d012ad43b4)
+
+With that done, within the project folder you can run the following command:
+
+```
+./program
+```
+
+This will start a small REPL.
 
 <h1 align="center">Syntax</h1>
 
-One of my primary motivations for creating the **Mari** programming language is to develop my own ideal syntax while also learning and growing as a programmer. Personally, I place a strong emphasis on syntax as it significantly impacts the readability and enjoyability of a language.
+```mariana
+// Function definition
+def func add(def x, def y) {
+    return x + y;
+}
 
-In **Mari**, I've strived to design a syntax that is clear, concise, and easy to read. I believe that code should be as readable as a text, bringing ease and understanding to the development process. While contemplating the syntax, I drew inspiration from my favorite languages — Rust, C, and Python. For instance, I truly appreciate the concept of immutability in Rust and the use of the "mut" keyword to define mutable variables. However, the ubiquitous "let" keyword found in many languages has always bothered me, and I've always loved the "def" keyword in Python.
+def x = 5; // Variable definition. All variables are constants by default.
+def mut y = 10; // Mutable variable definition
 
-By default, all variables in **Mari** are constants. In my experience, spanning about a year and a half as of mid-2023, developers rarely need to change the value of a variable once it's defined.
+def result = add(x, y);
+x = 0; // This will throw an error.
+y = 0; // This will pass.
 
+println("{x} + {y} = {result}");
 ```
-def x = 5; -- This is a constant variable
-def mut y = 10; -- This is a mutable variable
-```
 
-You can simply read these statements as "define x equals 5" and "define mutable y equals 10."
+<h1 align="center">Developer Notes</h1>
 
-Another example is that functions are defined using the "func" keyword, which is inspired by JavaScript.
+## Comments
 
-```
-def func add_numbers(x, y) { x + y; } -- implicit return
+One of my primary goals in this project is readability and comprehensibility (mainly for myself). Therefore, if you decide to review the source code, you'll encounter numerous comments like this one:
 
--- anonymous functions
-def square = func(x) {
-    return x ** 2;
+```c
+/**
+ * As in other languages, some special characters are allowed to create variable names,
+ * but you are not allowed to start with these characters.
+ *
+ * Let's take "!" for example:
+ * 
+ * ! is an operator character, if the lexer sees a !, it must
+ * create a specific token for it. Even so, if the language considers "!" as a letter
+ * (to create var names), so the lexer will tokenize it as a variable. Because of this,
+ * some languages must block these special characters to be the first letter of the var.
+ * 
+ * So if the lexer sees any of these special characters, it must create two tokens:
+ * !my_var: one for "!" and other for "my_var"
+ * 
+ * If the lexer sees any of these characters after a letter, the lexer must create a single token:
+ * my_!var: "my_!var"
+*/
+bool is_allowed_as_first_char(byte ch) {
+    return ch != '.' && ch != '?' &&
+
+ ch != '!';
 }
 ```
 
-Once again, you can read these statements as "define function add_numbers ..." and "define square function ...".
-
-(I like Lua comments)
-
-<h1 align="center">Testing</h1>
-
-As I couldn't find a suitable testing package, I built my own testing ""framework"". You can find all unit tests in files with names ending in `_test.c` and `_test.h`.
-
-To run all tests, use the following command:
-
-```bash
-make test && ./run_tests
-```
-
-If all tests pass, the output will be something like:
-
-![image](https://github.com/heiytor/mari-programming-language/assets/107213601/62583e37-9fde-4c85-988b-bd43f3290aa8)
-
-On the other hand, if any test fails, the program will exit, and the output will be something like:
-
-![image](https://github.com/heiytor/mari-programming-language/assets/107213601/b742dfb6-84ba-4cfd-a1cf-44d012ad43b4)
-
-## Lexer:
-
-***In computer science, lexical analysis, lexing or tokenization is the process of converting a sequence of characters (such as in a computer program or web page) into a sequence of lexical tokens (strings with an assigned and thus identified meaning). A program that performs lexical analysis may be termed a lexer, tokenizer,[1] or scanner, although scanner is also a term for the first stage of a lexer. A lexer is generally combined with a parser, which together analyze the syntax of programming languages, web pages, and so forth.***
-> [wikipedia](https://en.wikipedia.org/wiki/Lexical_analysis)
-
-under construction
-
-Currently lexer support hexdecimal, binary, octal, integer and float numbers. I'm working on negative number support.
+I'm striving to incorporate all the insights and learnings I found during the development process into the project.
