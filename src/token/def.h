@@ -1,5 +1,31 @@
-#ifndef INTERPRETER_TOKEN_TYPES_H
-#define INTERPRETER_TOKEN_TYPES_H
+#ifndef TOKEN_DEFINITION_H
+#define TOKEN_DEFINITION_H
+
+#include <stddef.h>
+
+#include <langdef.h>
+
+struct Token {
+    char *literal;
+    uint8 code;
+    int line;
+    int column;
+};
+
+struct Tokens {
+    struct Token **tokens;
+    size_t size;
+    size_t capacity;
+};
+
+struct Token_Map {
+    char *str;
+    uint8 token_code;
+};
+
+/**
+ * All codes above are constants used for tokenization
+*/
 
 #define ILLEGAL 1
 #define END_OF_FILE 2
@@ -43,7 +69,7 @@
 
 // Keywords
 #define FUNCTION 35
-#define VARIABLE 36
+#define DEFINE 36
 #define IF 37
 #define ELSE_IF 38
 #define ELSE 39
@@ -51,5 +77,7 @@
 #define TRUE 41
 #define FALSE 42
 #define MUTABLE 43
+#define AS 44
+#define RETURNS 45
 
-#endif /* INTERPRETER_TOKEN_TYPES_H */
+#endif /* TOKEN_DEFINITION_H */

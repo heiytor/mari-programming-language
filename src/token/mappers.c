@@ -1,13 +1,12 @@
 #include <string.h>
 
-#include <token/mappers.h>
+#include <langdef.h>
 
-#include <token/codes.h>
-#include <token/structs.h>
+#include <token/lib.h>
 
 struct Token_Map keywords[] = {
     {"func", FUNCTION},
-    {"def", VARIABLE},
+    {"def", DEFINE},
     {"true", TRUE},
     {"false", FALSE},
     {"if", IF},
@@ -15,9 +14,11 @@ struct Token_Map keywords[] = {
     {"else", ELSE},
     {"return", RETURN},
     {"mut", MUTABLE},
+    {"as", AS},
+    {"returns", RETURNS},
 };
 
-uint8 map_ident(char* ident) {
+uint8 get_ident_code(char* ident) {
     struct Token_Map *kw = keywords;
 
     while (kw->str) {
@@ -65,7 +66,7 @@ struct Token_Map symbols[] = {
     {"\0", END_OF_FILE},
 };
 
-uint8 map_symbol(char *symbol) {
+uint8 get_symbol_code(char *symbol) {
     struct Token_Map* sy = symbols;
 
     while (sy->str) {
