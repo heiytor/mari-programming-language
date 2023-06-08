@@ -2,11 +2,10 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <lexer/actions.h>
+#include <lexer/lib.h>
 
-#include <token/codes.h>
-#include <token/structs.h>
-#include <token/actions.h>
+#include <token/def.h>
+#include <token/lib.h>
 
 #define PROMPT ">>> "
 
@@ -24,11 +23,11 @@ void start(FILE *in, FILE *out) {
         }
 
         struct Lexer *l = new_lexer(line);
-        struct Token *t = next_token(l);
+        struct Token *t = l->next_token(l);
         print_token(t);
 
         while (t->code != END_OF_FILE) {
-            t = next_token(l);
+            t = l->next_token(l);
             print_token(t);
         }
     }
