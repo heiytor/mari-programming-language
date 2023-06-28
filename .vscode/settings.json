@@ -19,6 +19,15 @@
         "methods.h": "c",
         "structs.h": "c",
         "mappers.h": "c",
-        "actions.h": "c"
+        "actions.h": "c",
+        "characters.h": "c",
+        "parser.h": "c",
+        "ast.h": "c",
+        "stddef.h": "c",
+        "lib.h": "c",
+        "def.h": "c",
+        "chardef.h": "c",
+        "langdef.h": "c",
+        "token_test.h": "c"
     }
 }
