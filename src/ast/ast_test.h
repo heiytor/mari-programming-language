@@ -2,7 +2,6 @@
 #define AST_TEST_H
 
 #include <lexer/lib.h>
-#include <token/lib.h>
 #include <ast/def.h>
 
 void test_should_pass_if_program_to_string_is_equal_than_input();
