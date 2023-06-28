@@ -6,16 +6,16 @@
 /**
  * Converts a program to a string representation.
  * 
- * @param prg The program to convert.
+ * @param program The program to convert.
  * 
  * @return The string representation of the program.
  */
-char* __AST_program_to_string(struct Program* prg) {
+char* __AST_program_to_string(struct Program* program) {
     char* out = strdup("");
     if (out == NULL) return NULL;
 
-    for (int i = 0; i < prg->statements_size; i++) {
-        char* statement_string = prg->statements[i]->to_string(prg->statements[i]);
+    for (int i = 0; i < program->statements_size; i++) {
+        char* statement_string = program->statements[i]->to_string(program->statements[i]);
         if (statement_string == NULL) {
             free(out);
             return NULL;
@@ -43,12 +43,12 @@ char* __AST_program_to_string(struct Program* prg) {
 /**
  * Converts an expression statement to a string representation.
  *
- * @param stmt The expression statement to convert.
+ * @param statement The expression statement to convert.
  * 
  * @return The string representation of the expression statement.
  */
-char* __AST_expression_statement_to_string(struct Statement* stmt) {
-    if (stmt->expression != NULL) {
+char* __AST_expression_statement_to_string(struct Statement* statement) {
+    if (statement->expression != NULL) {
         // ...
     }
 
@@ -59,17 +59,17 @@ char* __AST_expression_statement_to_string(struct Statement* stmt) {
 /**
  * Converts a return statement to a string representation.
  *
- * @param stmt The return statement to convert.
+ * @param statement The return statement to convert.
  * 
  * @return The string representation of the return statement.
  */
-char* __AST_return_statement_to_string(struct Statement* stmt) {
+char* __AST_return_statement_to_string(struct Statement* statement) {
     char* out = malloc(sizeof(char));
     out[0] = '\0';
 
     // Allocate memory for "return " to be stored in temp
     char* temp = realloc(out,
-        (strlen(stmt->token->literal) + strlen(" ") + strlen(";") + strlen("\n") + 1) * sizeof(char)
+        (strlen(statement->token->literal) + strlen(" ") + strlen(";") + strlen("\n") + 1) * sizeof(char)
     );
 
     if (temp == NULL) {
@@ -79,10 +79,10 @@ char* __AST_return_statement_to_string(struct Statement* stmt) {
 
     out = temp;
 
-    strcpy(out, stmt->token->literal); // "return"
+    strcpy(out, statement->token->literal); // "return"
     strcat(out, " "); // "return "
 
-    if (stmt->expression != NULL) {
+    if (statement->expression != NULL) {
         // ...
     }
 
