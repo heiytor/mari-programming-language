@@ -18,10 +18,13 @@ struct Tokens {
     size_t capacity;
 };
 
-struct Token_Map {
+struct TokenMap {
     char *str;
     uint8 token_code;
 };
+
+extern struct TokenMap keywords[];
+extern struct TokenMap symbols[];
 
 /**
  * All codes above are constants used for tokenization
@@ -69,7 +72,7 @@ struct Token_Map {
 
 // Keywords
 #define FUNCTION 35
-#define DEFINE 36
+#define VARIABLE 36
 #define IF 37
 #define ELSE_IF 38
 #define ELSE 39
