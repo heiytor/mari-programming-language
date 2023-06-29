@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 #include <ast/lib.h>
-#include <ast/ast_test.h>
 #include <lexer/lib.h>
 #include <token/lib.h>
 #include <parser/lib.h>
