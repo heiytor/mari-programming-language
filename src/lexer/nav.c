@@ -33,7 +33,7 @@ void __LEXER_consume_char(struct Lexer* lex) {
     ++lex->read_position;
 }
 
-byte __LEXER_peek_prev_char(struct Lexer *lexer) {
+byte __LEXER_peek_prev_char(struct Lexer* lexer) {
     if (lexer->read_position >= lexer->input_length) {
         return 0;
     }
@@ -41,7 +41,7 @@ byte __LEXER_peek_prev_char(struct Lexer *lexer) {
     return lexer->input[lexer->read_position - 2];
 }
 
-byte __LEXER_peek_next_char(struct Lexer *lexer) {
+byte __LEXER_peek_next_char(struct Lexer* lexer) {
     if (lexer->read_position >= lexer->input_length) {
         return 0;
     }
@@ -56,23 +56,23 @@ byte __LEXER_peek_next_char(struct Lexer *lexer) {
  * 
  * @return A dynamically allocated string containing the read sequence, or NULL if there was an error.
  */
-char* __LEXER_read_sequence(struct Lexer *lex) {
-    int position = lex->position;
+char* __LEXER_read_sequence(struct Lexer* lexer) {
+    int position = lexer->position;
 
-    while ((is_letter(lex->ch) || is_numeric(lex->ch) || lex->ch == '.') ||
+    while ((is_letter(lexer->ch) || is_numeric(lexer->ch) || lexer->ch == '.') ||
             // signed numbers will match with this condition
-           ((lex->ch == '-' || lex->ch == '+') && is_numeric(__LEXER_peek_next_char(lex)))) {
-                __LEXER_consume_char(lex);
+           ((lexer->ch == '-' || lexer->ch == '+') && is_numeric(__LEXER_peek_next_char(lexer)))) {
+                __LEXER_consume_char(lexer);
     }
 
-    int length = lex->position - position;
+    int length = lexer->position - position;
 
     char* result = malloc(length + 1);
     if (result == NULL) {
         return NULL;
     }
     
-    memcpy(result, lex->input + position, length + 1);
+    memcpy(result, lexer->input + position, length + 1);
     
     result[length] = '\0';
 
@@ -90,8 +90,8 @@ char* __LEXER_read_sequence(struct Lexer *lex) {
  * 
  * @return void
  */
-void __LEXER_jump_whitespace(struct Lexer* lex) {
-    while (lex->ch == ' ' || lex->ch == '\t' || lex->ch == '\n' || lex->ch == '\r') {
-        __LEXER_consume_char(lex);
+void __LEXER_jump_whitespace(struct Lexer* lexer) {
+    while (lexer->ch == ' ' || lexer->ch == '\t' || lexer->ch == '\n' || lexer->ch == '\r') {
+        __LEXER_consume_char(lexer);
     }
 }
