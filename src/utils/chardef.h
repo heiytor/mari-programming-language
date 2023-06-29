@@ -4,14 +4,10 @@
 #include <langdef.h>
 #include <stdbool.h>
 
-bool is_numeric(byte ch);
-
-bool is_letter(byte ch);
-
-bool is_allowed_as_first_char(byte ch);
-
-bool is_compound_symbol(byte curr_char, byte next_char);
-
-bool is_signed_number(byte curr_char, byte next_char);
+int is_numeric(byte ch);
+int is_letter(byte ch);
+int is_allowed_as_first_char(byte ch);
+int is_compound_symbol(byte curr_char, byte next_char);
+int is_number(byte curr_char, byte next_char);
 
 #endif /* HELPERS_METHODS_T */

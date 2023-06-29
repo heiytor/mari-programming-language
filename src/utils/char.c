@@ -1,23 +1,65 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include <utils/chardef.h>
 #include <langdef.h>
 
-bool is_numeric(byte ch) {
+/**
+ * Checks if the character is numeric.
+ *
+ * This function determines whether a given character represents a number. It 
+ * returns true if the character is between '0' and '9'.
+ * 
+ * @param ch The character being evaluated.
+ * 
+ * @return 1 if the character is numeric, 0 otherwise.
+ */
+int is_numeric(byte ch) {
     return '0' <= ch && ch <= '9';
 }
 
-
-bool is_letter(byte ch) {
-    return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' || ch == '?' || ch == '!';
+/**
+ * Checks if the character is a letter.
+ * 
+ * Some programming languages allow special characters for variable declaration, such as "$" in
+ * Javascript. To accommodate this, during tokenization, this character must be considered a
+ * letter just like any other (a-zA-Z). 
+ * 
+ * During the syntax creation process, one of my main goals was to maintain readable code, for
+ * this reason, as a personal choice, I decided to make characters like "?" and "!" available
+ * for variable declaration. This happens because I believe that a function written for example
+ * as "is_char?()" can be much simpler to understand for an inexperienced person than simply
+ * "is_char".
+ * 
+ * A number of other special characters are available for the same reason (or simply to give
+ * freedom to the developer).
+ *
+ * @param ch The character being evaluated.
+ * 
+ * @return 1 if the character is a letter, 0 otherwise.
+ */
+int is_letter(byte ch) {
+    return 'a' <= ch && ch <= 'z' ||
+           'A' <= ch && ch <= 'Z' ||
+           // Add special characters above
+           ch == '_' ||
+        // ch == '-' || // uncomment to allow kebab-case
+           ch == '?' ||
+           ch == '!' ||
+           ch == '$';
 }
 
-bool is_compound_symbol(byte curr_char, byte next_char) {
-    bool actual = curr_char == '+' || curr_char == '-' || curr_char == '=' || curr_char == '!' || curr_char == '*' || curr_char == '<' || curr_char == '>';
-    bool next = next_char == '+' || next_char == '-' || next_char == '=' || next_char == '!' || next_char == '*' || next_char == '<' || next_char == '>';
+/**
+ * Checks if the character sequence forms a compound symbol.
+ * 
+ * @param curr_char The current character being evaluated.
+ * @param next_char The character following the current character.
+ * 
+ * @return 1 if the characters form a compound symbol, 0 otherwise.
+ */
+int is_compound_symbol(byte curr_char, byte next_char) {
+    int actual = curr_char == '+' || curr_char == '-' || curr_char == '=' || curr_char == '!' || curr_char == '*' || curr_char == '<' || curr_char == '>';
+    int next = next_char == '+' || next_char == '-' || next_char == '=' || next_char == '!' || next_char == '*' || next_char == '<' || next_char == '>';
 
     return actual == true && next == true;
 }
@@ -32,12 +74,23 @@ bool is_compound_symbol(byte curr_char, byte next_char) {
  * operates on the number "5". Similarly, in the expression "+5", the "+" is a unary 
  * plus operator.
  *
- * This function, `is_signed_number()`, is used to determine whether a given character 
- * sequence represents a signed number in this way. It returns true if the first character 
- * is a sign ('-' or '+') and the second character is numeric. Otherwise, it returns false.
+ * This function, `is_number()`, is used to determine whether a given character 
+ * sequence represents a number. This includes both signed numbers, where the first 
+ * character is a sign ('-' or '+') followed by a numeric character, as well as 
+ * unsigned numbers, where the character is numeric. It returns true if the first 
+ * character is numeric or if it's a sign and the second character is numeric. 
+ * Otherwise, it returns false.
+ * 
+ * @param curr_char The current character being evaluated. This could be a numeric 
+ * character or a sign ('+' or '-').
+ * 
+ * @param next_char The character following the current character. Used for evaluating 
+ * if a sequence is representing a signed number.
+ * 
+ * @return 1 if is number, 0 otherwise.
  */
-bool is_signed_number(byte curr_char, byte next_char) {
-    return curr_char == '-' && is_numeric(next_char); // || curr_char == '+' && is_numeric(next_char);
+int is_number(byte curr_char, byte next_char) {
+    return (is_numeric(curr_char) || ((curr_char == '-' || curr_char == '+') && is_numeric(next_char)));
 }
 
 /**
@@ -56,7 +109,14 @@ bool is_signed_number(byte curr_char, byte next_char) {
  * 
  * If the lexer sees any of these characters after a letter, the lexer must create a single token:
  * my_!var: "my_!var"
-*/
-bool is_allowed_as_first_char(byte ch) {
-    return ch != '.' && ch != '?' && ch != '!';
+ * 
+ * @param ch The current character being evaluated.
+ * 
+ * @return 1 if is number, 0 otherwise.
+ */
+int is_allowed_as_first_char(byte ch) {
+    return ch != '.' &&
+        // ch != '-' && // uncomment to allow kebab-case
+           ch != '?' &&
+           ch != '!';
 }
