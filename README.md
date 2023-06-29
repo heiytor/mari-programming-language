@@ -50,9 +50,9 @@ println("${x} + ${y} = ${result}");
 
 <h1 align="center">Tests</h1>
 
-During the course of this project's development, I considered several testing frameworks, such as Check. However, my evaluation led me to the conclusion that introducing such a framework could potentially overcomplicate things.
+During the course of this project's development, I considered several testing frameworks, such as [Check](https://libcheck.github.io/check/). However, my evaluation led me to the conclusion that introducing such a framework could potentially overcomplicate things.
 
-As a result, I decided to implement my own testing "framework". Running these tests is simple, just execute the following command:
+As a result, I decided to implement my own testing "lib". Running these tests is simple, just execute the following command:
 
 ```
 make test
@@ -60,15 +60,15 @@ make test
 
 If all tests pass successfully, the console will display a message similar to the following:
 
-![]()
+...
 
 However, if a test fails, the program will halt execution at the point of failure, allowing for easier debugging.
 
-You can find the definitions for all tests in the files that end with the "_test.h" suffix, while the `_test.c` files contain the implementations of these tests. The `./src/main_test.c` file serves as the test runner, executing all test implementations.
+You can find the definitions for all tests in the files that end with the ***_test.h*** suffix, while the ***_test.c*** files contain the implementations of these tests. The ***./src/main_test.c*** file serves as the test runner, executing all test implementations.
 
-Tests are named following the pattern "**test_should_pass_if_\[condition]**". For example:
-1. **test_should_pass_if**_var_statement_to_string_is_equal_to_expected (`src/ast/ast_test.h`)
-2. **test_should_pass_if**_bool_assignments_are_equal_to_expected (`src/token/token_test.h`)**
+Tests are named following the pattern "`test_should_pass_if_\[condition]`". For example:
+1. `test_should_pass_if`_var_statement_to_string_is_equal_to_expected (***src/ast/ast_test.h***)
+2. `test_should_pass_if`_bool_assignments_are_equal_to_expected (******src/token/token_test.h******)**
 
 Each `_test.c` file contains local helper functions that assist in performing specific tasks within the file, but are not accessible for other tests. For this reason, I would categorize this as a library, rather than a framework. For instance, in ***src/ast/ast_test.c***, you'll find the `create_program` function:
 
