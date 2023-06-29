@@ -17,7 +17,7 @@
  */
 void __PARSER_consume_token(struct Parser *self) {
     self->curr_token = self->next_token;
-    self->next_token = self->lexer->next_token(self->lexer);
+    self->next_token = self->lexer->consume_token(self->lexer);
 }
 
 /**

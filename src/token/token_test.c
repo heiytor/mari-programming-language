@@ -31,7 +31,7 @@ void are_tokens_equal(char* input, struct Token expected_tokens[], int number_of
 
     struct Token *tok;
     for (int i = 0; tok->code != END_OF_FILE; i++) {
-        tok = lexer->next_token(lexer);
+        tok = lexer->consume_token(lexer);
         push_token(tokens, tok);
         ++number_of_tokens;
     }
