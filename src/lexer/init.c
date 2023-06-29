@@ -21,14 +21,14 @@ struct Lexer* new_lexer(char* input) {
     lex->line = 1;
     lex->column = 0;
 
-    lex->next_char = __next_char;
-    lex->jump_whitespace = __jump_whitespace;
-    lex->peek_next_char = __peek_next_char;
-    lex->peek_prev_char = __peek_prev_char;
-    lex->read_sequence = __read_sequence;
-    lex->next_token = __next_token;
+    lex->consume_char = __LEXER_consume_char;
+    lex->jump_whitespace = __LEXER_jump_whitespace;
+    lex->peek_next_char = __LEXER_peek_next_char;
+    lex->peek_prev_char = __LEXER_peek_prev_char;
+    lex->read_sequence = __LEXER_read_sequence;
+    lex->consume_token = __LEXER_consume_token;
 
-    lex->next_char(lex);
+    lex->consume_char(lex);
 
     return lex;
 }

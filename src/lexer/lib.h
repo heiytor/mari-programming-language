@@ -6,11 +6,11 @@
 
 struct Lexer* new_lexer(char* input);
 
-void __next_char(struct Lexer* l);
-char* __read_sequence(struct Lexer* l);
-void __jump_whitespace(struct Lexer* l);
-byte __peek_prev_char(struct Lexer *l);
-byte __peek_next_char(struct Lexer *l);
-struct Token *__next_token(struct Lexer *l);
+void __LEXER_consume_char(struct Lexer* lexer);
+char* __LEXER_read_sequence(struct Lexer* lexer);
+void __LEXER_jump_whitespace(struct Lexer* lexer);
+byte __LEXER_peek_prev_char(struct Lexer* lexer);
+byte __LEXER_peek_next_char(struct Lexer* lexer);
+struct Token *__LEXER_consume_token(struct Lexer* lexer);
 
 #endif /* LEXER_LIB_H */
