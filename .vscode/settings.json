@@ -28,6 +28,12 @@
         "def.h": "c",
         "chardef.h": "c",
         "langdef.h": "c",
-        "token_test.h": "c"
+        "token_test.h": "c",
+        "vector": "c",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "utility": "c",
+        "TEST.C": "cpp"
     }
 }
