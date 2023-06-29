@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include <langdef.h>
 #include <token/lib.h>
