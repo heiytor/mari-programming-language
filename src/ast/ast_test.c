@@ -25,7 +25,7 @@ void test_statement(char* want, char* got, char* test_name) {
     printf("\x1b[36m%s:\x1b[0m \x1b[32mPass.\x1b[0m\n", test_name);
 }
 
-void test_should_pass_if_program_to_string_is_equal_than_input() {
+void test_should_pass_if_program_to_string_is_equal_to_expected() {
     char* input = "var x = ;\n" // var statement
                   "var mut y = ;\n" // mutable var statement
                   "return ;"; // return statement
@@ -37,10 +37,10 @@ void test_should_pass_if_program_to_string_is_equal_than_input() {
                  "return ;";
     char* got = prg->to_string(prg);
 
-    test_statement(want, got, "test_should_pass_if_program_to_string_is_equal_than_input");
+    test_statement(want, got, "test_should_pass_if_program_to_string_is_equal_to_expected");
 }
 
-void test_should_pass_if_return_statement_to_string_is_equal_than_input() {
+void test_should_pass_if_return_statement_to_string_is_equal_to_expected() {
     char* input = "return ;";
     struct Program* prg = create_program(input);
 
@@ -49,10 +49,10 @@ void test_should_pass_if_return_statement_to_string_is_equal_than_input() {
     char* want = "return ;\n";  
     char* got = prg->statements[0]->to_string(prg->statements[0]);
 
-    test_statement(want, got, "test_should_pass_if_return_statement_to_string_is_equal_than_input");
+    test_statement(want, got, "test_should_pass_if_return_statement_to_string_is_equal_to_expected");
 }
 
-void test_should_pass_if_var_statement_to_string_is_equal_than_input() {
+void test_should_pass_if_var_statement_to_string_is_equal_to_expected() {
     char* input = "var x = ;";
     struct Program* prg = create_program(input);
 
@@ -61,10 +61,10 @@ void test_should_pass_if_var_statement_to_string_is_equal_than_input() {
     char* want = "var x = ;\n";
     char* got = prg->statements[0]->to_string(prg->statements[0]);
 
-    test_statement(want, got, "test_should_pass_if_var_statement_to_string_is_equal_than_input");
+    test_statement(want, got, "test_should_pass_if_var_statement_to_string_is_equal_to_expected");
 }
 
-void test_should_pass_if_mutable_var_statement_to_string_is_equal_than_input() {
+void test_should_pass_if_mutable_var_statement_to_string_is_equal_to_expected() {
     char* input = "var mut x = ;";
     struct Program* prg = create_program(input);
 
@@ -73,5 +73,5 @@ void test_should_pass_if_mutable_var_statement_to_string_is_equal_than_input() {
     char* want = "var mut x = ;\n";
     char* got = prg->statements[0]->to_string(prg->statements[0]);
 
-    test_statement(want, got, "test_should_pass_if_mutable_var_statement_to_string_is_equal_than_input");
+    test_statement(want, got, "test_should_pass_if_mutable_var_statement_to_string_is_equal_to_expected");
 }
