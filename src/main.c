@@ -2,10 +2,11 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <ast/lib.h>
+#include <ast/ast_test.h>
 #include <lexer/lib.h>
-
-#include <token/def.h>
 #include <token/lib.h>
+#include <parser/lib.h>
 
 #define PROMPT ">>> "
 
@@ -22,19 +23,22 @@ void start(FILE *in, FILE *out) {
             return;
         }
 
-        struct Lexer *l = new_lexer(line);
-        struct Token *t = l->next_token(l);
-        print_token(t);
+        struct Lexer *lexer = new_lexer(line);
+        struct Token *token = lexer->consume_token(lexer);
+        // struct Parser *parser = new_parser(l);
+        print_token(token);
 
-        while (t->code != END_OF_FILE) {
-            t = l->next_token(l);
-            print_token(t);
+        while (token->code != END_OF_FILE) {
+            token = lexer->consume_token(lexer);
+            print_token(token);
         }
+
+        // parser->parse_program(parser);
     }
 }
 
 int main() {
     start(stdin, stdout);
-    
+
     return 0;
 }
