@@ -6,154 +6,152 @@
 #include <token/lib.h>
 
 
-int are_tok_equal(struct Token *t1, struct Token *t2) {
-    if (strcmp(t1->literal, t2->literal) != 0) {
+int tokencmp(struct Token *f_token, struct Token *s_token) {
+    if (strcmp(f_token->literal, s_token->literal) != 0) {
         return 0;
     }
-    if (t1->code != t2->code) {
+    if (f_token->code != s_token->code) {
         return 0;
     }
-    if (t1->line != t2->line) {
+    if (f_token->line != s_token->line) {
         return 0;
     }
-    if (t1->column != t2->column) {
+    if (f_token->column != s_token->column) {
         return 0;
     }
 
     return 1;
 }
 
-void comp_tok(char* input, struct Token expected_tok[], int num_expected_tok, char *test_name) {
-    struct Lexer *lex = new_lexer(input);
-    struct Tokens *toks = init_token_arr();
+void are_tokens_equal(char* input, struct Token expected_tokens[], int number_of_expected_tokens, char *test_name) {
+    struct Lexer *lexer = new_lexer(input);
+    struct Tokens *tokens = new_tokens_array();
 
-    int num_tok = 0;
+    int number_of_tokens = 0;
 
     struct Token *tok;
     for (int i = 0; tok->code != END_OF_FILE; i++) {
-        tok = lex->next_token(lex);
-        push_token(toks, tok);
-        ++num_tok;
+        tok = lexer->next_token(lexer);
+        push_token(tokens, tok);
+        ++number_of_tokens;
     }
 
     // printf("\n");
-    // for (int i = 0; i < num_tok; i++) {
+    // for (int i = 0; i < number_of_tokens; i++) {
     //     printf("i[%d] ", i);
-    //     print_token(toks->tokens[i]);
+    //     print_token(tokens->tokens[i]);
     // }
 
-    free(lex);
+    free(lexer);
 
-    if (num_tok != num_expected_tok) {
-        printf("\x1b[35m%s:\x1b[0m \x1b[31mNumber of tokens mismatch want=%d got=%d.\x1b[0m\n", test_name, num_expected_tok, num_tok);
-        pop_tokens(toks);
+    if (number_of_tokens != number_of_expected_tokens) {
+        printf("\x1b[35m%s:\x1b[0m \x1b[31mNumber of tokens mismatch want=%d got=%d.\x1b[0m\n", test_name, number_of_expected_tokens, number_of_tokens);
+        pop_tokens(tokens);
         exit(1);
     }
 
-    for (int i = 0; i < num_tok; i++) {
-        if (!are_tok_equal(toks->tokens[i], &expected_tok[i])) {
-            printf("\x1b[35m%s:\x1b[0m \x1b[31mInvalid token[%d] want=%d got=%d.\x1b[0m\n", test_name, i, expected_tok[i].code, toks->tokens[i]->code);
-            pop_tokens(toks);
+    for (int i = 0; i < number_of_tokens; i++) {
+        if (!tokencmp(tokens->tokens[i], &expected_tokens[i])) {
+            printf("\x1b[35m%s:\x1b[0m \x1b[31mInvalid token[%d] want=%d got=%d.\x1b[0m\n", test_name, i, expected_tokens[i].code, tokens->tokens[i]->code);
+            pop_tokens(tokens);
             exit(1);
         }
     }
 
     printf("\x1b[36m%s:\x1b[0m \x1b[32mPass.\x1b[0m\n", test_name);
 
-    pop_tokens(toks);
+    pop_tokens(tokens);
 }
 
 
-void test_number_assignment() {
-    char* input = "def my_int = 3000;\n"       // int
-                  "def my_hex = 0xFF;\n"       // hex
-                  "def my_bin = 0b00;\n"       // binary
-                  "def my_oct = 0o01;\n"       // octal
-                  "def my_flt = 3.14;\n"       // float
-                  "def my_int_with_ = 3_00;\n" // int with _
-                  "def my_neg_int = -1321;";
+void test_should_pass_if_number_assignment_is_equal_to_expected() {
+    char* input = "var my_int = 3000;\n"       // int
+                  "var my_hex = 0xFF;\n"       // hex
+                  "var my_bin = 0b00;\n"       // binary
+                  "var my_oct = 0o01;\n"       // octal
+                  "var my_flt = 3.14;\n"       // float
+                  "var my_int_with_ = 3_00;\n" // int with _
+                  "var my_neg_int = -1321;";
 
-    struct Lexer *lex = new_lexer(input);
-    struct Tokens *toks = init_token_arr();
+    struct Lexer *lexer = new_lexer(input);
+    struct Tokens *tokens = new_tokens_array();
 
-    struct Token expected_tok[] = {
+    struct Token expected_tokens[] = {
         // literal | code | line | column
-        { "def", 36, 1, 1 },
-        { "my_int", 3, 1, 5 },
-        { "=", 5, 1, 12 },
-        { "3000", 3, 1, 14 },
-        { ";", 30, 1, 18 },
-        { "def", 36, 2, 2 },
-        { "my_hex", 3, 2, 6 },
-        { "=", 5, 2, 13 },
-        { "0xFF", 3, 2, 15 },
-        { ";", 30, 2, 19 },
-        { "def", 36, 3, 2 },
-        { "my_bin", 3, 3, 6 },
-        { "=", 5, 3, 13 },
-        { "0b00", 3, 3, 15 },
-        { ";", 30, 3, 19 },
-        { "def", 36, 4, 2 },
-        { "my_oct", 3, 4, 6 },
-        { "=", 5, 4, 13 },
-        { "0o01", 3, 4, 15 },
-        { ";", 30, 4, 19 },
-        { "def", 36, 5, 2 },
-        { "my_flt", 3, 5, 6 },
-        { "=", 5, 5, 13 },
-        { "3", 3, 5, 15 },
-        { ".", 15, 5, 16 },
-        { "14", 3, 5, 17 },
-        { ";", 30, 5, 19 },
-        { "def", 36, 6, 2 },
-        { "my_int_with_", 3, 6, 6 },
-        { "=", 5, 6, 19 },
-        { "3_00", 3, 6, 21 },
-        { ";", 30, 6, 25 },
-        { "def", 36, 7, 2 },
-        { "my_neg_int", 3, 7, 6 },
-        { "=", 5, 7, 17 },
-        { "-1321", 3, 7, 19 },
-        { ";", 30, 7, 24 },
-        { "", 2, 7, 25 },
+        { "var",          36, 1, 1  },
+        { "my_int",       3,  1, 5  },
+        { "=",            5,  1, 12 },
+        { "3000",         4,  1, 14 },
+        { ";",            30, 1, 18 },
+        { "var",          36, 2, 2  },
+        { "my_hex",       3,  2, 6  },
+        { "=",            5,  2, 13 },
+        { "0xFF",         4,  2, 15 },
+        { ";",            30, 2, 19 },
+        { "var",          36, 3, 2  },
+        { "my_bin",       3,  3, 6  },
+        { "=",            5,  3, 13 },
+        { "0b00",         4,  3, 15 },
+        { ";",            30, 3, 19 },
+        { "var",          36, 4, 2  },
+        { "my_oct",       3,  4, 6  },
+        { "=",            5,  4, 13 },
+        { "0o01",         4,  4, 15 },
+        { ";",            30, 4, 19 },
+        { "var",          36, 5, 2  },
+        { "my_flt",       3,  5, 6  },
+        { "=",            5,  5, 13 },
+        { "3.14",         4,  5, 15 },
+        { ";",            30, 5, 19 },
+        { "var",          36, 6, 2  },
+        { "my_int_with_", 3,  6, 6  },
+        { "=",            5,  6, 19 },
+        { "3_00",         4,  6, 21 },
+        { ";",            30, 6, 25 },
+        { "var",          36, 7, 2  },
+        { "my_neg_int",   3,  7, 6  },
+        { "=",            5, 7, 17  },
+        { "-1321",        4, 7, 19  },
+        { ";",            30, 7, 24 },
+        { "",             2, 7, 25  },
     };
 
-    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_number_assignment");
+    are_tokens_equal(input, expected_tokens, sizeof(expected_tokens)/sizeof(struct Token), "test_should_pass_if_number_assignment_is_equal_to_expected");
 }
 
-void test_bool_assignment() {
-    char* input = "def my_true = true;\n"
-                  "def my_false = false;";
+void test_should_pass_if_bool_assignments_are_equal_to_expected() {
+    char* input = "var my_true = true;\n"
+                  "var my_false = false;";
 
-    struct Lexer *lex = new_lexer(input);
-    struct Tokens *toks = init_token_arr();
+    struct Lexer *lexer = new_lexer(input);
+    struct Tokens *tokens = new_tokens_array();
 
-    struct Token expected_tok[] = {
+    struct Token expected_tokens[] = {
         // literal | code | line | column
-        { "def", 36, 1, 1 },
-        { "my_true", 3, 1, 5 },
-        { "=", 5, 1, 13 },
-        { "true", 41, 1, 15 },
-        { ";", 30, 1, 19 },
-        { "def", 36, 2, 2 },
-        { "my_false", 3, 2, 6 },
-        { "=", 5, 2, 15 },
-        { "false", 42, 2, 17 },
-        { ";", 30, 2, 22 },
-        { "", 2, 2, 23 },
+        { "var",      36, 1, 1  },
+        { "my_true",  3,  1, 5  },
+        { "=",        5,  1, 13 },
+        { "true",     41, 1, 15 },
+        { ";",        30, 1, 19 },
+        { "var",      36, 2, 2  },
+        { "my_false", 3,  2, 6  },
+        { "=",        5,  2, 15 },
+        { "false",    42, 2, 17 },
+        { ";",        30, 2, 22 },
+        { "",         2,  2, 23 },
     };
 
-    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_bool_assignment");
+    are_tokens_equal(input, expected_tokens, sizeof(expected_tokens)/sizeof(struct Token), "test_should_pass_if_bool_assignments_are_equal_to_expected");
 }
 
 // Tests all delimiters at once
-void test_delimiters() {
+void test_should_pass_if_delimiters_are_equal_to_expected() {
     char *input = "() {};";
 
-    struct Lexer *lex = new_lexer(input);
-    struct Tokens *toks = init_token_arr();
+    struct Lexer *lexer = new_lexer(input);
+    struct Tokens *tokens = new_tokens_array();
 
-    struct Token expected_tok[] = {
+    struct Token expected_tokens[] = {
         // literal | code | line | column
         { "(", 31, 1, 1 },
         { ")", 32, 1, 2 },
@@ -163,17 +161,17 @@ void test_delimiters() {
         { "",  2,  1, 7 },
     };
 
-    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_delimiters");
+    are_tokens_equal(input, expected_tokens, sizeof(expected_tokens)/sizeof(struct Token), "test_should_pass_if_delimiters_are_equal_to_expected");
 }
 
 // Tests all single symbols at once
-void test_single_symbol() {
+void test_should_pass_if_single_symbols_are_equal_to_expected() {
     char *input = "+ - * ! = < > / ? : , .;";
 
-    struct Lexer *lex = new_lexer(input);
-    struct Tokens *toks = init_token_arr();
+    struct Lexer *lexer = new_lexer(input);
+    struct Tokens *tokens = new_tokens_array();
 
-    struct Token expected_tok[] = {
+    struct Token expected_tokens[] = {
         { "+", 6, 1, 1 },
         { "-", 7, 1, 3 },
         { "*", 9, 1, 5 },
@@ -190,18 +188,18 @@ void test_single_symbol() {
         { "",  2,  1, 25 },
     };
 
-    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_single_symbol");
+    are_tokens_equal(input, expected_tokens, sizeof(expected_tokens)/sizeof(struct Token), "test_should_pass_if_single_symbols_are_equal_to_expected");
 }
 
 // Tests all compound symbols at once
-void test_compound_symbol() {
+void test_should_pass_if_compound_symbols_are_equal_to_expected() {
     char *input = "++ -- ** !! ==;\n"
                   "+= -= *= /= <= >= !=;";
 
-    struct Lexer *lex = new_lexer(input);
-    struct Tokens *toks = init_token_arr();
+    struct Lexer *lexer = new_lexer(input);
+    struct Tokens *tokens = new_tokens_array();
 
-    struct Token expected_tok[] = {
+    struct Token expected_tokens[] = {
         { "++", 16, 1, 1  },
         { "--", 17, 1, 4  },
         { "**", 22, 1, 7  },
@@ -222,18 +220,18 @@ void test_compound_symbol() {
 
     int num_tok = 0;
 
-    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_compound_symbol");
+    are_tokens_equal(input, expected_tokens, sizeof(expected_tokens)/sizeof(struct Token), "test_should_pass_if_compound_symbols_are_equal_to_expected");
 }
 
 // Should pass if ";" don't concatenate with other characters
-void test_semicolon_symbol_independence() {
+void test_should_pass_if_semicolon_assingment_are_equal_to_expected() {
     char* input = ";* ;+ ;- ;= ;> ;<\n"
                   "*; +; -; =; <; >;";
 
-    struct Lexer *lex = new_lexer(input);
-    struct Tokens *toks = init_token_arr();
+    struct Lexer *lexer = new_lexer(input);
+    struct Tokens *tokens = new_tokens_array();
 
-    struct Token expected_tok[] = {
+    struct Token expected_tokens[] = {
         { ";", 30, 1, 1  },
         { "*", 9,  1, 2  },
         { ";", 30, 1, 4  },
@@ -261,6 +259,6 @@ void test_semicolon_symbol_independence() {
         { "",  2,  2, 19 },
     };
 
-    comp_tok(input, expected_tok, sizeof(expected_tok)/sizeof(struct Token), "test_semicolon_symbol_independence");
+    are_tokens_equal(input, expected_tokens, sizeof(expected_tokens)/sizeof(struct Token), "test_should_pass_if_semicolon_assingment_are_equal_to_expected");
 }
 
