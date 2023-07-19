@@ -4,22 +4,22 @@
 #include <langdef.h>
 #include <token/def.h>
 
+typedef struct Lexer Lexer;
 struct Lexer {
-    char* input;
-    int   input_length;
-    int   position;
-    int   read_position;
-    byte  ch;
-    int   line;
-    int   column;
+    char*     input;
+    int       input_length;
+    chcode_t  ch;
+    int       position;
+    int       read_position;
+    int       line;
+    int       column;
 
-    void  (*consume_char)(struct Lexer *self);
-    char *(*read_sequence)(struct Lexer *self);
-    void  (*jump_whitespace)(struct Lexer *self);
-    byte  (*peek_prev_char)(struct Lexer *self);
-    byte  (*peek_next_char)(struct Lexer *self);
+    void      (*consume_char)(Lexer *self);
+    char     *(*read_sequence)(Lexer *self);
+    void      (*jump_whitespace)(Lexer *self);
+    chcode_t  (*peek_next_char)(Lexer *self);
 
-    struct Token *(*consume_token)(struct Lexer *lex);
+    Token    *(*consume_token)(Lexer *lex);
 };
 
 #endif /* LEXER_DEF_H */

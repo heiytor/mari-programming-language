@@ -1,7 +1,11 @@
-#include <string.h>
-#include <stdlib.h>
+// This file includes the function for creating a new lexer object and initializing the lexer.
 
-#include <lexer/lib.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <lexer/init.h>
+#include <lexer/nav.h>
+#include <lexer/tokenization.h>
 
 /**
  * Creates a new lexer object for tokenizing the input string.
@@ -10,25 +14,24 @@
  *
  * @return A pointer to the newly created lexer object
  */
-struct Lexer* new_lexer(char* input) {
-    struct Lexer *lex = malloc(sizeof(struct Lexer));
+Lexer* new_lexer(char* input) {
+    Lexer *l = malloc(sizeof(Lexer));
 
-    lex->input = input;
-    lex->position = 0;
-    lex->read_position = 0;
-    lex->ch = 0;
-    lex->input_length = strlen(input);
-    lex->line = 1;
-    lex->column = 0;
+    l->input = input;
+    l->position = 0;
+    l->read_position = 0;
+    l->ch = 0;
+    l->input_length = strlen(input);
+    l->line = 1;
+    l->column = 0;
 
-    lex->consume_char = __LEXER_consume_char;
-    lex->jump_whitespace = __LEXER_jump_whitespace;
-    lex->peek_next_char = __LEXER_peek_next_char;
-    lex->peek_prev_char = __LEXER_peek_prev_char;
-    lex->read_sequence = __LEXER_read_sequence;
-    lex->consume_token = __LEXER_consume_token;
+    l->consume_char = __LEXER_consume_char;
+    l->jump_whitespace = __LEXER_jump_whitespace;
+    l->peek_next_char = __LEXER_peek_next_char;
+    l->read_sequence = __LEXER_read_sequence;
+    l->consume_token = __LEXER_consume_token;
 
-    lex->consume_char(lex);
+    l->consume_char(l);
 
-    return lex;
+    return l;
 }
